@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.order.mapper.ExampleOrderMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, order_no, remark, state, version, create_time, update_time
+    </sql>
+
+    <select id="getExampleOrderById" resultType="com.example.order.vo.ExampleOrderQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from example_order where id = #{id}
+    </select>
+
+    <select id="getExampleOrderPageList" parameterType="com.example.order.param.ExampleOrderPageParam" resultType="com.example.order.vo.ExampleOrderQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from example_order where is_delete = false
+    </select>
+
+</mapper>

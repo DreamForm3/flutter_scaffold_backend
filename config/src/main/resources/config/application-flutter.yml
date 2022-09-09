@@ -1,0 +1,80 @@
+############################# 访问路径、端口tomcat start #############################
+server:
+  port: 8656
+  servlet:
+    context-path: /flutterScaffold
+############################# 访问路径、端口tomcat end ###############################
+
+
+spring-boot-plus:
+  # 是否启用ansi控制台输出有颜色的字体，local环境建议开启，服务器环境设置为false
+  enable-ansi: false
+  # 当前环境服务IP地址
+  server-ip: 10.110.10.24
+  # 文件上传下载配置
+  upload-path: /opt/upload/
+  # 验证码开关
+  enable-verify-code: false
+  # AOP配置
+  aop:
+    log:
+      enable: true
+      log-print-type: LINE
+      request-log-format: false
+      response-log-format: false
+
+spring:
+  application:
+    name: flutter-scaffold
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:postgresql://10.110.10.24:5432/flutter
+          username: flutter_user
+          password: RgbL5ObC
+          driver-class-name: org.postgresql.Driver
+        # 还有数据源的花就继续向下添加，例如：
+        # db2:
+          # driver-class-name: com.mysql.jdbc.Driver
+          # url: jdbc:mysql://10.176.0.30:3306/safty_supervision_qa?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+          # username: saftyuser1
+          # password: 1Qz94H9g
+
+  # Redis配置
+  redis:
+    database: 2
+    host: 10.110.10.24
+    password: flow888
+    port: 6379
+
+  # 邮箱配置
+  mail:
+    host: your-domain
+    port: 25
+    username: username
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          # 不用加密连接
+          starttls:
+            enable: false
+
+# 打印SQL语句和结果集，本地开发环境可开启，线上注释掉
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+############################## 业务配置 start ###############################
+flutter-scaffold:
+  # 验证码相关配置
+  verification-code:
+    # 验证码有效时间
+    timeout: 5
+    # 接收验证码邮箱的后缀
+    email-suffix: wuxicloud.com
+############################## 业务配置 end ###############################

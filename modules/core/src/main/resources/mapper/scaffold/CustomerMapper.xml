@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lakecloud.scaffold.mapper.CustomerMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, contact_info, create_user, state, remark, is_delete, version, create_time, update_time
+    </sql>
+
+    <select id="getCustomerById" resultType="com.lakecloud.scaffold.vo.CustomerQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from customer where id = #{id}
+    </select>
+
+    <select id="getCustomerPageList" parameterType="com.lakecloud.scaffold.param.CustomerPageParam" resultType="com.lakecloud.scaffold.vo.CustomerQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from customer where is_delete = false
+        <if test="param.name != null">
+            and name like concat('%',#{param.name},'%')
+        </if>
+        <if test="param.contactInfo != null">
+            and contact_info like concat('%',#{param.contactInfo},'%')
+        </if>
+    </select>
+
+</mapper>

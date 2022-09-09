@@ -1,0 +1,203 @@
+package ${package.Controller};
+
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import lombok.extern.slf4j.Slf4j;
+#if(${cfg.generatorStrategy} != 'SIMPLE')
+#if(${cfg.generatorPageParam})
+import ${cfg.pageParamClass};
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+#if(${cfg.generatorQueryVo})
+import ${cfg.queryVoClass};
+#end
+import ${cfg.apiResultClass};
+import ${cfg.pagingClass};
+import ${cfg.idParamClass};
+import io.geekidea.springbootplus.framework.common.api.ApiCode;
+#if(${cfg.operationLog})
+import io.geekidea.springbootplus.framework.log.annotation.Module;
+import io.geekidea.springbootplus.framework.log.annotation.OperationLog;
+import io.geekidea.springbootplus.framework.log.enums.OperationLogType;
+#end
+#if(${cfg.paramValidation})
+import ${cfg.validatorAddPackage};
+import ${cfg.validatorUpdatePackage};
+import org.springframework.validation.annotation.Validated;
+#end
+#if(${cfg.requiresPermissions})
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+#end
+#end
+#if(${swagger2})
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiImplicitParam;
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpServletResponse;
+
+
+/**
+ * $!{table.comment} 控制器
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("/${cfg.entityObjectName}s")
+#if(${cfg.operationLog})
+@Module("${cfg.module}")
+#end
+#if(${cfg.swaggerTags})
+@Api(value = "$!{table.comment}API", tags = {"$!{table.comment}"})
+#else
+@Api("$!{table.comment}API")
+#end
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+
+    @Autowired
+    private ${table.serviceName} ${cfg.serviceObjectName};
+
+#if(${cfg.generatorStrategy} != 'SIMPLE')
+    /**
+     * 添加$!{table.comment}
+     */
+    @PostMapping("")
+#if(${cfg.requiresPermissions})
+    @RequiresPermissions("$!{cfg.colonTableName}:add")
+#end
+#if(${cfg.operationLog})
+    @OperationLog(name = "添加$!{table.comment}", type = OperationLogType.ADD)
+#end
+    @ApiOperation(value = "添加$!{table.comment}", response = ApiResult.class)
+    public ApiResult<Boolean> add${entity}(#if(${cfg.paramValidation})@Validated(Add.class) #end@RequestBody ${entity} ${cfg.entityObjectName}, HttpServletResponse response) {
+        boolean flag = false;
+        try {
+            flag = ${cfg.serviceObjectName}.save${entity}(${cfg.entityObjectName});
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            log.error("添加$!{table.comment}发生异常", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResult.result(flag);
+    }
+
+    /**
+     * 修改$!{table.comment}
+     */
+    @PutMapping("/{id}")
+#if(${cfg.requiresPermissions})
+    @RequiresPermissions("$!{cfg.colonTableName}:update")
+#end
+#if(${cfg.operationLog})
+    @OperationLog(name = "修改$!{table.comment}", type = OperationLogType.UPDATE)
+#end
+    @ApiOperation(value = "修改$!{table.comment}", response = ApiResult.class)
+    public ApiResult<Boolean> update${entity}(@PathVariable("id") Long id, #if(${cfg.paramValidation})@Validated(Update.class) #end@RequestBody ${entity} ${cfg.entityObjectName}, HttpServletResponse response) {
+        boolean flag = false;
+        try {
+            ${cfg.entityObjectName}.setId(id);
+            flag = ${cfg.serviceObjectName}.update${entity}(${cfg.entityObjectName});
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            log.error("修改$!{table.comment}发生异常", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResult.result(flag);
+    }
+
+    /**
+     * 删除$!{table.comment}
+     */
+    @DeleteMapping("/{id}")
+#if(${cfg.requiresPermissions})
+    @RequiresPermissions("$!{cfg.colonTableName}:delete")
+#end
+#if(${cfg.operationLog})
+    @OperationLog(name = "删除$!{table.comment}", type = OperationLogType.DELETE)
+#end
+    @ApiOperation(value = "删除$!{table.comment}", response = ApiResult.class)
+    public ApiResult<Boolean> delete${entity}(@PathVariable("id") Long id, HttpServletResponse response) {
+        boolean flag = false;
+        try {
+            flag = ${cfg.serviceObjectName}.delete${entity}(id);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            log.error("删除$!{table.comment}发生异常", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResult.result(flag);
+    }
+
+    /**
+     * 获取$!{table.comment}详情
+     */
+    @GetMapping("/{id}")
+#if(${cfg.requiresPermissions})
+    @RequiresPermissions("$!{cfg.colonTableName}:info")
+#end
+#if(${cfg.operationLog})
+    @OperationLog(name = "$!{table.comment}详情", type = OperationLogType.INFO)
+#end
+    @ApiOperation(value = "$!{table.comment}详情", response = ${entity}${cfg.queryVo}.class)
+    public ApiResult<${entity}${cfg.queryVo}> get${entity}(@PathVariable("id") Long id, HttpServletResponse response) {
+        try {
+#if(${cfg.generatorStrategy} == 'SINGLE')
+            ${entity}${cfg.queryVo} ${cfg.entityObjectName}${cfg.queryVo} = ${cfg.serviceObjectName}.getById(id);
+#else
+            ${entity}${cfg.queryVo} ${cfg.entityObjectName}${cfg.queryVo} = ${cfg.serviceObjectName}.get${entity}ById(id);
+#end
+            response.setStatus(HttpServletResponse.SC_OK);
+            return ApiResult.ok(${cfg.entityObjectName}${cfg.queryVo});
+        } catch (Exception e) {
+            log.error("获取$!{table.comment}详情发生异常", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return ApiResult.fail(ApiCode.SYSTEM_EXCEPTION, null);
+        }
+    }
+
+    /**
+     * $!{table.comment}分页列表
+     */
+    @GetMapping("")
+#if(${cfg.requiresPermissions})
+    @RequiresPermissions("$!{cfg.colonTableName}:page")
+#end
+#if(${cfg.operationLog})
+    @OperationLog(name = "$!{table.comment}分页列表", type = OperationLogType.PAGE)
+#end
+    @ApiImplicitParam(paramType = "query", dataTypeClass = ${entity}${cfg.pageParam}.class)
+    @ApiOperation(value = "$!{table.comment}分页列表", response = ${entity}${cfg.queryVo}.class)
+    public ApiResult<Paging<${entity}${cfg.queryVo}>> get${entity}PageList(${entity}${cfg.pageParam} ${cfg.entityObjectName}${cfg.pageParam}, HttpServletResponse response) {
+        try {
+            Paging<${entity}${cfg.queryVo}> paging = ${cfg.entityObjectName}Service.get${entity}PageList(${cfg.entityObjectName}${cfg.pageParam});
+            response.setStatus(HttpServletResponse.SC_OK);
+            return ApiResult.ok(paging);
+        } catch (Exception e) {
+            log.error("获取$!{table.comment}分页列表发生异常", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return ApiResult.fail(ApiCode.SYSTEM_EXCEPTION, null);
+        }
+    }
+#end
+
+}
+
+#end

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lakecloud.scaffold.mapper.UserMsgMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        is_delete,
+        version,
+        create_time,
+        update_time,
+        send_user, receive_user, title, content, status, reply_id, sent_time, receive_time, reply_time, bak1, bak2, bak3, bak4, bak5
+    </sql>
+
+    <select id="getUserMsgById" resultType="com.lakecloud.scaffold.vo.UserMsgQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from user_msg where id = #{id}
+    </select>
+
+    <select id="getUserMsgPageList" parameterType="com.lakecloud.scaffold.param.UserMsgPageParam" resultType="com.lakecloud.scaffold.vo.UserMsgQueryVo">
+        select
+        <include refid="Base_Column_List"/>
+        from user_msg m
+        <where>
+            <choose>
+                <when test="param.sendUser != null and param.receiveUser != null">
+                    and (m.send_user = #{param.sendUser} or m.receive_user = #{param.receiveUser})
+                </when>
+                <otherwise>
+                    <if test="param.sendUser != null">
+                        and m.send_user = #{param.sendUser}
+                    </if>
+                    <if test="param.receiveUser != null">
+                        and m.receive_user = #{param.receiveUser}
+                    </if>
+                </otherwise>
+            </choose>
+
+            <if test="param.title != null">
+                and m.title like CONCAT('%', #{param.title}, '%')
+            </if>
+            <if test="param.content != null">
+                and m.content like CONCAT('%', #{param.content}, '%')
+            </if>
+            <if test="param.statusList != null">
+                and m.status in
+                <foreach item="status" collection="param.statusList" separator="," open="(" close=")" index="">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="param.replyId != null">
+                and m.reply_id = #{param.replyId}
+            </if>
+            <if test="param.replyId != null">
+                and m.reply_id = #{param.replyId}
+            </if>
+            <if test="param.sentTimeStart != null">
+                and m.sent_time &lt;= #{param.sentTimeStart}
+            </if>
+            <if test="param.sentTimeEnd != null">
+                and m.sent_time &lt; #{param.sentTimeEnd}
+            </if>
+            <if test="param.receiveTimeStart != null">
+                and m.receive_time &lt;= #{param.receiveTimeStart}
+            </if>
+            <if test="param.receiveTimeEnd != null">
+                and m.receive_time &lt; #{param.receiveTimeEnd}
+            </if>
+            <if test="param.replyTimeStart != null">
+                and m.reply_time &lt;= #{param.replyTimeStart}
+            </if>
+            <if test="param.replyTimeEnd != null">
+                and m.reply_time &lt; #{param.replyTimeEnd}
+            </if>
+            and is_delete = false
+        </where>
+        order by m.id desc
+    </select>
+
+</mapper>
